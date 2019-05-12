@@ -25,7 +25,7 @@ extern crate relm;
 #[macro_use]
 extern crate relm_derive;
 #[macro_use]
-extern crate gtk_test;
+extern crate relm_test;
 
 use gtk::{
     Button,
@@ -45,6 +45,7 @@ use gtk::Orientation::{Horizontal, Vertical};
 use relm::{
     Component,
     ContainerWidget,
+    Loop,
     Relm,
     Update,
     Widget,
@@ -239,7 +240,7 @@ impl Update for Win {
                 self.model.counter += 1;
                 self.widgets.label.set_text(&self.model.counter.to_string());
             },
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 }
@@ -308,7 +309,7 @@ mod tests {
     use gtk::{Button, Entry, Label, LabelExt};
 
     use relm;
-    use gtk_test::{click, enter_keys, find_child_by_name};
+    use relm_test::{click, enter_keys, find_child_by_name};
 
     use Win;
 

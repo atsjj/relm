@@ -25,7 +25,7 @@ extern crate relm;
 #[macro_use]
 extern crate relm_derive;
 #[macro_use]
-extern crate gtk_test;
+extern crate relm_test;
 
 use std::cell::Cell;
 use std::rc::Rc;
@@ -34,7 +34,7 @@ use gtk::{
     Inhibit,
     WidgetExt,
 };
-use relm::{Relm, Widget};
+use relm::{Loop, Relm, Widget};
 use relm_derive::widget;
 
 use self::Msg::*;
@@ -71,7 +71,7 @@ impl Widget for Win {
             Release => {
                 println!("Release");
             },
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 
@@ -104,7 +104,7 @@ mod tests {
     use gtk::EntryExt;
 
     use relm;
-    use gtk_test::enter_keys;
+    use relm_test::enter_keys;
 
     use Win;
 

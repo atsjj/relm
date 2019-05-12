@@ -25,7 +25,7 @@ extern crate relm;
 #[macro_use]
 extern crate relm_derive;
 #[macro_use]
-extern crate gtk_test;
+extern crate relm_test;
 
 use gtk::{
     Button,
@@ -39,7 +39,7 @@ use gtk::{
     WindowType,
 };
 use gtk::Orientation::Vertical;
-use relm::{Relm, Update, Widget, WidgetTest};
+use relm::{Loop, Relm, Update, Widget, WidgetTest};
 
 struct Model {
     counter: i32,
@@ -92,7 +92,7 @@ impl Update for Win {
                 self.model.counter += 1;
                 label.set_text(&self.model.counter.to_string());
             },
-            Msg::Quit => gtk::main_quit(),
+            Msg::Quit => Loop::quit(),
         }
     }
 }
@@ -158,7 +158,7 @@ mod tests {
     use gtk::LabelExt;
 
     use relm;
-    use gtk_test::click;
+    use relm_test::click;
 
     use Win;
 

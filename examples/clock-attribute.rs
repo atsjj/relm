@@ -25,7 +25,7 @@ extern crate gtk;
 extern crate relm;
 #[macro_use]
 extern crate relm_derive;
-extern crate gtk_test;
+extern crate relm_test;
 
 use chrono::{DateTime, Local};
 use gtk::{
@@ -33,7 +33,7 @@ use gtk::{
     LabelExt,
     WidgetExt,
 };
-use relm::{Relm, Widget, interval};
+use relm::{Loop, Relm, Widget, interval};
 use relm_derive::widget;
 
 use self::Msg::*;
@@ -63,7 +63,7 @@ impl Widget for Win {
     fn update(&mut self, event: Msg) {
         match event {
             Tick => self.model.time = Local::now(),
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 
@@ -88,7 +88,7 @@ mod tests {
     use gtk::LabelExt;
 
     use relm;
-    use gtk_test::wait;
+    use relm_test::wait;
 
     use Win;
 

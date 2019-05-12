@@ -4,7 +4,7 @@ extern crate relm;
 #[macro_use]
 extern crate relm_derive;
 
-use relm::{Relm, Update, Widget};
+use relm::{Loop, Relm, Update, Widget};
 use gtk::prelude::*;
 use gtk::{Window, Inhibit, WindowType};
 
@@ -42,7 +42,7 @@ impl Update for Win {
     // Widgets may also be updated in this function.
     fn update(&mut self, event: Msg) {
         match event {
-            Msg::Quit => gtk::main_quit(),
+            Msg::Quit => Loop::quit(),
         }
     }
 }

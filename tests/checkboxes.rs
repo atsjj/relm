@@ -24,7 +24,7 @@ extern crate gtk;
 extern crate relm;
 #[macro_use]
 extern crate relm_derive;
-extern crate gtk_test;
+extern crate relm_test;
 
 use gtk::{
     ButtonExt,
@@ -39,6 +39,7 @@ use gtk::Orientation::Vertical;
 use relm::{
     Component,
     ContainerWidget,
+    Loop,
     Relm,
     Update,
     Widget,
@@ -145,7 +146,7 @@ impl Update for Win {
 
     fn update(&mut self, event: Msg) {
         match event {
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
             MinusToggle => {
                 if self.minus_button.widget().get_active() {
                     self.plus_button.emit(Uncheck);
@@ -212,7 +213,7 @@ mod tests {
     use gtk::ToggleButtonExt;
 
     use relm;
-    use gtk_test::click;
+    use relm_test::click;
 
     use Win;
 

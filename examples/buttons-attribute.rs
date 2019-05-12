@@ -24,7 +24,7 @@ extern crate gtk;
 extern crate relm;
 extern crate relm_derive;
 #[cfg_attr(test, macro_use)]
-extern crate gtk_test;
+extern crate relm_test;
 
 use gtk::{
     ButtonExt,
@@ -34,7 +34,7 @@ use gtk::{
     WidgetExt,
 };
 use gtk::Orientation::Vertical;
-use relm::Widget;
+use relm::{Loop, Widget};
 use relm_derive::{Msg, widget};
 
 use self::Msg::*;
@@ -68,7 +68,7 @@ impl Widget for Win {
             #[cfg(test)] Test => (),
             Decrement => self.model.counter -= 1,
             Increment => self.model.counter += 1,
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 
@@ -110,7 +110,7 @@ mod tests {
     use gtk::{ButtonExt, LabelExt};
 
     use relm;
-    use gtk_test::click;
+    use relm_test::click;
 
     use Win;
 

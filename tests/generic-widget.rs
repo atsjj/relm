@@ -25,7 +25,7 @@ extern crate relm;
 #[macro_use]
 extern crate relm_derive;
 #[macro_use]
-extern crate gtk_test;
+extern crate relm_test;
 
 use std::fmt::Display;
 
@@ -44,6 +44,7 @@ use gtk::Orientation::{Horizontal, Vertical};
 use relm::{
     Component,
     ContainerWidget,
+    Loop,
     Relm,
     Update,
     Widget,
@@ -172,7 +173,7 @@ impl Update for Win {
 
     fn update(&mut self, event: Msg) {
         match event {
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 }
@@ -222,7 +223,7 @@ mod tests {
     use gtk::{Button, Label, LabelExt};
 
     use relm;
-    use gtk_test::{click, find_child_by_name};
+    use relm_test::{click, find_child_by_name};
 
     use Win;
 

@@ -24,7 +24,7 @@ extern crate gtk;
 extern crate relm;
 #[macro_use]
 extern crate relm_derive;
-extern crate gtk_test;
+extern crate relm_test;
 
 use gtk::{
     BoxExt,
@@ -36,7 +36,7 @@ use gtk::{
     WidgetExt,
 };
 use gtk::Orientation::Vertical;
-use relm::Widget;
+use relm::{Loop, Widget};
 use relm_derive::widget;
 
 use self::Msg::*;
@@ -90,7 +90,7 @@ impl Widget for Win {
         match event {
             Decrement => self.model.counter -= 1,
             Increment => self.model.counter += 1,
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 

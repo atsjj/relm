@@ -26,8 +26,6 @@ extern crate relm;
 #[macro_use]
 extern crate relm_derive;
 #[macro_use]
-extern crate gtk_test;
-#[macro_use]
 extern crate relm_test;
 
 use gtk::{
@@ -40,7 +38,7 @@ use gtk::{
     WidgetExt,
 };
 use gtk::Orientation::{Horizontal, Vertical};
-use relm::{Relm, Widget};
+use relm::{Loop, Relm, Widget};
 use relm_derive::widget;
 
 use self::Msg::*;
@@ -90,7 +88,7 @@ impl Widget for Win {
             DataAvailable(_) | DataCleared => (),
             LeftChanged(text) => self.model.left_text = text,
             RightChanged(text) => self.model.right_text = text,
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 
@@ -146,7 +144,8 @@ mod tests {
     };
 
     use relm;
-    use gtk_test::{
+    use relm_test::{
+        click,
         enter_key,
         enter_keys,
         focus,
@@ -174,6 +173,16 @@ mod tests {
         assert!(right_entry.has_focus());
 
         enter_keys(&window.get_focus().expect("focused widget"), "right");
+        // TODO: remove the following and uncomment the next block when https://github.com/enigo-rs/enigo/pull/63 is released.
+        println!("before click");
+        click(concat_button);
+        println!("after click");
+        assert_text!(label, "leftright");
+        click(cancel_button);
+        assert_text!(label, "");
+        assert_text!(left_entry, "");
+        assert_text!(right_entry, "");
+        /*
         enter_key(window, key::Tab);
         assert!(concat_button.has_focus());
         enter_key(&window.get_focus().expect("focused widget"), key::space);
@@ -185,6 +194,7 @@ mod tests {
         assert_text!(label, "");
         assert_text!(left_entry, "");
         assert_text!(right_entry, "");
+        */
 
         focus(left_entry);
         assert!(left_entry.has_focus());

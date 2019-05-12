@@ -24,7 +24,7 @@ extern crate gtk;
 extern crate relm;
 #[macro_use]
 extern crate relm_derive;
-extern crate gtk_test;
+extern crate relm_test;
 
 use gtk::{
     ButtonExt,
@@ -34,7 +34,7 @@ use gtk::{
     WidgetExt,
 };
 use gtk::Orientation::Vertical;
-use relm::Widget;
+use relm::{Loop, Widget};
 use relm_derive::widget;
 
 use self::Msg::*;
@@ -114,7 +114,7 @@ impl Widget for Win {
 
     fn update(&mut self, event: Msg) {
         match event {
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 
@@ -136,7 +136,7 @@ mod tests {
     use gtk::{Button, Label, WidgetExt};
 
     use relm;
-    use gtk_test::find_child_by_name;
+    use relm_test::find_child_by_name;
 
     use Win;
 

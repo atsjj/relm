@@ -5,7 +5,7 @@ extern crate relm;
 extern crate relm_derive;
 
 use relm_derive::widget;
-use relm::Widget;
+use relm::{Loop, Widget};
 use gtk::prelude::*;
 use gtk::Inhibit;
 use gtk::Orientation::Vertical;
@@ -35,7 +35,7 @@ impl Widget for Win {
             // attribute every time the model.counter attribute is updated.
             Msg::Decrement => self.model.counter -= 1,
             Msg::Increment => self.model.counter += 1,
-            Msg::Quit => gtk::main_quit(),
+            Msg::Quit => Loop::quit(),
         }
     }
 

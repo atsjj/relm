@@ -26,7 +26,7 @@ extern crate relm;
 #[macro_use]
 extern crate relm_derive;
 #[cfg_attr(test, macro_use)]
-extern crate gtk_test;
+extern crate relm_test;
 
 use gtk::{
     ContainerExt,
@@ -41,7 +41,7 @@ use gtk::{
     WindowType,
 };
 use gtk::Orientation::Vertical;
-use relm::{Relm, Update, Widget, WidgetTest};
+use relm::{Loop, Relm, Update, Widget, WidgetTest};
 
 use self::Msg::*;
 
@@ -88,7 +88,7 @@ impl Update for Win {
                                                        .collect();
                 self.widgets.label.set_text(&self.model.content);
             },
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 }
@@ -147,7 +147,7 @@ mod tests {
     use gtk::LabelExt;
 
     use relm;
-    use gtk_test::{enter_key, enter_keys};
+    use relm_test::{enter_key, enter_keys};
 
     use Win;
 

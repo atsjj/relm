@@ -25,7 +25,7 @@ extern crate relm;
 #[macro_use]
 extern crate relm_derive;
 #[cfg_attr(test, macro_use)]
-extern crate gtk_test;
+extern crate relm_test;
 
 use gtk::{
     ButtonExt,
@@ -34,7 +34,7 @@ use gtk::{
     NotebookExt,
     WidgetExt,
 };
-use relm::Widget;
+use relm::{Loop, Widget};
 
 use self::Msg::*;
 
@@ -51,7 +51,7 @@ impl Widget for Win {
 
     fn update(&mut self, event: Msg) {
         match event {
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 

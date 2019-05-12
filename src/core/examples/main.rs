@@ -39,7 +39,7 @@ use gtk::{
     WindowType,
 };
 use gtk::Orientation::Vertical;
-use relm::EventStream;
+use relm::{EventStream, Loop};
 
 use Msg::*;
 
@@ -169,7 +169,7 @@ fn main() {
                 model.counter += 1;
                 widgets.counter_label.set_text(&model.counter.to_string());
             },
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 

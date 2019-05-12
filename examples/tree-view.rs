@@ -45,7 +45,7 @@ use gtk::{
     WindowType
 };
 use gtk::Orientation::Vertical;
-use relm::{Relm, Update, Widget};
+use relm::{Loop, Relm, Update, Widget};
 
 // These two constants stand for the columns of the listmodel and the listview
 const VALUE_COL: i32 = 0;
@@ -114,7 +114,7 @@ impl Update for Win {
                     }
                 }
             },
-            Msg::Quit => gtk::main_quit(),
+            Msg::Quit => Loop::quit(),
         }
     }
 }

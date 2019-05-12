@@ -29,7 +29,7 @@ use gtk::{
     Inhibit,
     WidgetExt,
 };
-use relm::{Component, Widget, init};
+use relm::{Component, Loop, Widget, init};
 use relm_derive::widget;
 
 use self::Msg::*;
@@ -68,7 +68,7 @@ impl Widget for Win {
 
     fn update(&mut self, event: Msg) {
         match event {
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 

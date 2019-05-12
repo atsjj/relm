@@ -25,7 +25,7 @@ extern crate gtk;
 extern crate relm;
 #[macro_use]
 extern crate relm_derive;
-extern crate gtk_test;
+extern crate relm_test;
 
 use chrono::Local;
 use gtk::{
@@ -37,7 +37,14 @@ use gtk::{
     Window,
     WindowType,
 };
-use relm::{Relm, Update, Widget, WidgetTest, interval};
+use relm::{
+    Loop,
+    Relm,
+    Update,
+    Widget,
+    WidgetTest,
+    interval,
+};
 
 use self::Msg::*;
 
@@ -72,7 +79,7 @@ impl Update for Win {
                 let time = Local::now();
                 self.label.set_text(&format!("{}", time.format("%H:%M:%S")));
             },
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 }
@@ -123,7 +130,7 @@ mod tests {
     use gtk::LabelExt;
 
     use relm;
-    use gtk_test::wait;
+    use relm_test::wait;
 
     use Win;
 

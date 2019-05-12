@@ -61,11 +61,11 @@ use gtk::{
 };
 use gtk::Orientation::Vertical;
 use relm::{
+    Loop,
     Relm,
     Update,
     UpdateNew,
     Widget,
-    execute,
 };
 use relm_derive::widget;
 use simplelog::{Config, TermLogger};
@@ -80,38 +80,38 @@ const READ_SIZE: usize = 1024;
 
 pub struct Model {
     button_enabled: bool,
+    event_loop: Loop,
     loader: PixbufLoader,
     relm: Relm<Win>,
-    topic: String,
     text: String,
 }
 
 #[derive(Msg)]
 pub enum Msg {
-    DownloadCompleted,
+    DownloadCompleted(usize),
     FetchUrl,
     HttpError(String),
     ImageChunk(Vec<u8>),
-    NewGif(Vec<u8>),
+    NewGif(Vec<u8>, usize),
     Quit,
 }
 
 #[widget]
 impl Widget for Win {
     fn model(relm: &Relm<Self>, (): ()) -> Model {
-        let topic = "cats";
         Model {
             button_enabled: true,
+            event_loop: relm.event_loop().clone(),
             loader: PixbufLoader::new(),
             relm: relm.clone(),
-            topic: topic.to_string(),
-            text: topic.to_string(),
+            text: String::new(),
         }
     }
 
     fn update(&mut self, event: Msg) {
         match event {
-            DownloadCompleted => {
+            DownloadCompleted(entry) => {
+                self.model.event_loop.remove_stream(entry);
                 self.model.button_enabled = true;
                 self.button.grab_focus();
                 self.model.loader.close().ok();
@@ -124,10 +124,11 @@ impl Widget for Win {
                 // loader.
                 self.model.button_enabled = false;
 
-                let url = format!("https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag={}",
-                    self.model.topic);
-                let http = execute::<Http>(url);
-                connect_stream!(http@ReadDone(ref buffer), self.model.relm.stream(), NewGif(buffer.take()));
+                let url = format!("http://aws.random.cat/meow");
+                let http = self.model.event_loop.execute::<Http>(url);
+                let entry = self.model.event_loop.reserve();
+                connect_stream!(http@ReadDone(ref buffer), self.model.relm.stream(), NewGif(buffer.take(), entry));
+                self.model.event_loop.set_stream(entry, http);
             },
             HttpError(error) => {
                 self.model.button_enabled = true;
@@ -137,19 +138,22 @@ impl Widget for Win {
             ImageChunk(chunk) => {
                 //self.model.loader.write(&chunk).expect("write failure");
                 if let Err(error) = self.model.loader.write(&chunk) {
-                    println!("{}", error);
+                    eprintln!("{}", error);
                 }
             },
-            NewGif(buffer) => {
+            NewGif(buffer, entry) => {
+                self.model.event_loop.remove_stream(entry);
                 if let Ok(body) = String::from_utf8(buffer) {
                     let mut json = json::parse(&body).expect("invalid json");
-                    let url = json["data"]["image_url"].take_string().expect("take_string failed");
-                    let http = execute::<Http>(url);
+                    let url = json["file"].take_string().expect("take_string failed");
+                    let http = self.model.event_loop.execute::<Http>(url);
+                    let entry = self.model.event_loop.reserve();
                     connect_stream!(http@DataRead(ref buffer), self.model.relm.stream(), ImageChunk(buffer.take()));
-                    connect_stream!(http@ReadDone(_), self.model.relm.stream(), DownloadCompleted);
+                    connect_stream!(http@ReadDone(_), self.model.relm.stream(), DownloadCompleted(entry));
+                    self.model.event_loop.set_stream(entry, http);
                 }
             },
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 
@@ -254,7 +258,7 @@ impl Update for Http {
                 if let Ok(uri) = HttpUri::new(&self.model.url) {
                     let path = uri.resource.path;
                     let query = uri.resource.query.unwrap_or_default();
-                    let buffer = format!("GET {}?{}\r\nHost: {}\r\n\r\n", path, query, uri.authority);
+                    let buffer = format!("GET {}?{} HTTP/1.1\r\nHost: {}\r\n\r\n", path, query, uri.authority);
                     connect_async!(writer, write_async(buffer.into_bytes(), PRIORITY_DEFAULT), self.model.relm,
                         |_| Wrote);
                 }

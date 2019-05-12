@@ -25,7 +25,7 @@ extern crate relm;
 #[macro_use]
 extern crate relm_derive;
 #[cfg_attr(test, macro_use)]
-extern crate gtk_test;
+extern crate relm_test;
 
 use gtk::{
     ButtonExt,
@@ -35,7 +35,12 @@ use gtk::{
     WidgetExt,
 };
 use gtk::Orientation::{Horizontal, Vertical};
-use relm::{Component, ContainerWidget, Widget};
+use relm::{
+    Component,
+    ContainerWidget,
+    Loop,
+    Widget,
+};
 use relm_derive::widget;
 
 use self::CounterMsg::*;
@@ -112,7 +117,7 @@ impl Widget for Win {
                 let widget = self.hbox.add_widget::<Counter>(());
                 self.model.counters.push(widget);
             },
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
             Remove => {
                 if let Some(counter) = self.model.counters.pop() {
                     self.hbox.remove_widget(counter);
@@ -154,7 +159,7 @@ mod tests {
     use gtk::{Button, ContainerExt, Label, LabelExt};
 
     use relm;
-    use gtk_test::{click, find_child_by_name};
+    use relm_test::{click, find_child_by_name};
 
     use Win;
 

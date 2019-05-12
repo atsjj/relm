@@ -26,7 +26,7 @@ extern crate relm;
 #[macro_use]
 extern crate relm_derive;
 #[cfg_attr(test, macro_use)]
-extern crate gtk_test;
+extern crate relm_test;
 
 use gtk::{
     EditableSignals,
@@ -37,7 +37,7 @@ use gtk::{
     WidgetExt,
 };
 use gtk::Orientation::Vertical;
-use relm::Widget;
+use relm::{Loop, Widget};
 use relm_derive::widget;
 
 use self::Msg::*;
@@ -66,7 +66,7 @@ impl Widget for Win {
                 self.model.content = text.chars().rev().collect();
                 self.model.content += &format!(" ({})", len);
             },
-            Quit => gtk::main_quit(),
+            Quit => Loop::quit(),
         }
     }
 
@@ -103,7 +103,7 @@ mod tests {
     use gtk::LabelExt;
 
     use relm;
-    use gtk_test::{enter_key, enter_keys};
+    use relm_test::{enter_key, enter_keys};
 
     use Win;
 
