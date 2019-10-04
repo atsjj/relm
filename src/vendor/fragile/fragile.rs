@@ -3,7 +3,7 @@
 use std::cell::UnsafeCell;
 use std::cmp;
 use std::fmt;
-use std::mem;
+use std::mem::{self, MaybeUninit};
 use std::mem::ManuallyDrop;
 use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
 
@@ -69,7 +69,7 @@ impl<T> Fragile<T> {
     pub fn into_inner(mut self) -> T {
         self.assert_thread();
         unsafe {
-            let value = mem::replace(&mut self.value, mem::uninitialized());
+            let value = mem::replace(&mut self.value, MaybeUninit::uninit().assume_init());
             mem::forget(self);
             *ManuallyDrop::into_inner(value).into_inner()
         }
